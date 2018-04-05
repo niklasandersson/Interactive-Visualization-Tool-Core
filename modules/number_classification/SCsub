@@ -1,0 +1,26 @@
+# SCsub
+Import('env')
+
+sources = [
+    "register_types.cpp",
+    "number_classification.cpp"
+]
+
+env.Append(LIBPATH=["/usr/local/lib"])
+env.Append(LIBS=["opencv_stitching", "opencv_videostab", "opencv_superres", "opencv_dnn_objdetect", "opencv_stereo", "opencv_rgbd", "opencv_xphoto", "opencv_freetype", "opencv_face", "opencv_photo", "opencv_ccalib", "opencv_hdf", "opencv_bioinspired", "opencv_fuzzy", "opencv_bgsegm", "opencv_img_hash", "opencv_surface_matching", "opencv_line_descriptor", "opencv_dpm", "opencv_tracking", "opencv_plot", "opencv_sfm", "opencv_xfeatures2d", "opencv_shape", "opencv_datasets", "opencv_text", "opencv_dnn", "opencv_ml", "opencv_structured_light", "opencv_phase_unwrapping", "opencv_optflow", "opencv_ximgproc", "opencv_video", "opencv_aruco", "opencv_calib3d", "opencv_cvv", "opencv_features2d", "opencv_highgui", "opencv_videoio", "opencv_flann", "opencv_reg", "opencv_xobjdetect", "opencv_imgcodecs", "opencv_objdetect", "opencv_imgproc", "opencv_core"])
+
+module_env = env.Clone()
+module_env.Append(CXXFLAGS=['-O2', '-std=c++11'])
+
+
+if ARGUMENTS.get('number_classification_shared', 'no') == 'yes':
+    # Shared lib compilation
+    module_env.Append(CXXFLAGS='-fPIC ')
+    module_env['LIBS'] = []
+    shared_lib = module_env.SharedLibrary(target='#bin/number_classification', source=sources)
+    shared_lib_shim = shared_lib[0].name.rsplit('.', 1)[0]
+    env.Append(LIBS=[shared_lib_shim])
+    env.Append(LIBPATH=['#bin'])
+else:
+    # Static compilation
+    module_env.add_source_files(env.modules_sources, sources)
