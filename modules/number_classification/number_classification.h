@@ -16,7 +16,7 @@ public:
     NumberClassification();
     /* hej */
     /* hej */
-    int Classify(const Ref<Image> &p_image);
+    int Classify(const Ref<Image> &p_image, Rect2 rect);
 
 protected:
     static void _bind_methods();

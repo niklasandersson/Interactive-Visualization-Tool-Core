@@ -4,7 +4,7 @@ NumberClassification::NumberClassification() {
 
 }
 
-int NumberClassification::Classify(const Ref<Image> &p_image) {
+int NumberClassification::Classify(const Ref<Image> &p_image, Rect2 rect) {
   Ref<Image> img = p_image->duplicate();
   int width = img->get_width();
   int height = img->get_height();
@@ -24,9 +24,12 @@ int NumberClassification::Classify(const Ref<Image> &p_image) {
   PoolVector<uint8_t> data = img->get_data();
   PoolVector<uint8_t>::Read r = data.read();
   cv::Mat image = cv::Mat(height, width, CV_8UC4, const_cast<unsigned char*>(r.ptr())).clone();
+  cv::Rect roi(rect.position.x, rect.position.y,
+               rect.size.width, rect.size.height);
+  cv::Mat clipped_image(image, roi);
   /* cv::Mat reshapedImage = imageWithData.reshape(0, height); */
   cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );
-  cv::imshow( "Display window", image);
+  cv::imshow( "Display window", clipped_image);
 
 
 
@@ -47,5 +50,5 @@ int NumberClassification::Classify(const Ref<Image> &p_image) {
 }
 
 void NumberClassification::_bind_methods() {
-  ClassDB::bind_method(D_METHOD("Classify", "img"), &NumberClassification::Classify);
+  ClassDB::bind_method(D_METHOD("Classify", "img", "rect"), &NumberClassification::Classify);
 }
