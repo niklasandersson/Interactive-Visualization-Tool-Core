@@ -9,17 +9,25 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <armadillo>
+
+#include <string>
+
 class NumberClassification : public Node {
     GDCLASS(NumberClassification, Node);
 
 public:
     NumberClassification();
-    /* hej */
-    /* hej */
     int Classify(const Ref<Image> &p_image, Rect2 rect);
 
 protected:
     static void _bind_methods();
+
+private:
+    int ClassifyMean(arma::vec number);
+    arma::Mat<double> mean_digits;
+
+    arma::mat cv2arma(cv::Mat& cv_mat);
 
 
 };
